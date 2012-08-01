@@ -41,9 +41,12 @@ mkdir -p %{buildroot}%{_rootdir}
 for folder in bin lib locale node_modules resources scripts *.json; do
     [[ -d $folder ]] && cp -rp $folder %{buildroot}%{_rootdir}/
 done
-mkdir -p %{buildroot}%{_rootdir}/config
+for folder in /etc/init.d %{_rootdir}/config; do
+    mkdir -p %{buildroot}$folder
+done
 cp -p config/l10n-all.json %{buildroot}%{_rootdir}/config
 cp -p config/l10n-prod.json %{buildroot}%{_rootdir}/config
+cp -p config/browserid %{buildroot}/etc/init.d/
 exit 0
 
 %clean
@@ -53,8 +56,11 @@ exit 0
 %files
 %defattr(-,root,root,-)
 %{_rootdir}
+%attr(775,root,root,-) /etc/init.d/browserid
 
 %changelog
+* Thu Aug 1  2012 David Caro <david.caro.estevez@gmail.com>
+- Added init script
 * Thu Jun 20 2012 David Caro <david.caro.estevez@gmail.com>
 - locales are optional
 - using a full version string
